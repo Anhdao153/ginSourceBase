@@ -9,3 +9,7 @@ version:
 .phony: start
 start:
 	go run .
+
+.phony: grpc
+grpc:
+	protoc rpc/$(PARAM)/$(PARAM).proto --go_out=. --go-grpc_out=.
