@@ -1,0 +1,18 @@
+syntax = "proto3";
+option go_package = "rpc/healthCheck/";
+package healthCheck;
+
+service HealthCheck {
+    // Sends a greeting
+    rpc HealthCheck (HealthCheckReq) returns (HealthCheckReply) {}
+  }
+  
+  // The request message containing the user's name.
+  message HealthCheckReq {
+    string name = 1;
+  }
+  
+  // The response message containing the greetings
+  message HealthCheckReply {
+    string message = 1;
+  }

@@ -9,6 +9,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/viper"
+	"google.golang.org/grpc"
 )
 
 var Server *gin.Engine = gin.Default()
@@ -17,7 +18,7 @@ func main() {
 	env.Use()
 	gin.ForceConsoleColor()
 	prisma.PrismaInit()
-	routes.Routes(Server)
+	routes.GinRoutes(Server)
 	middleware.Middlewares(Server)
 	Server.Static("/docs", "./docs")
 	swagger.Use(Server)
@@ -25,6 +26,6 @@ func main() {
 	Server.Run(":" + viper.GetString("PORT"))
 
 	// start grpc
-	// s := grpc.NewServer()
-
+	s := grpc.NewServer()
+	routes.GrpcRoutes(s)
 }

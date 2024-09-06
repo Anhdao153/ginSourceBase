@@ -7,7 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func Routes(gin *gin.Engine) {
+func GinRoutes(gin *gin.Engine) {
 	v1 := gin.Group("/api/v1")
 	user.UserRoutes(v1)
 	health.HealthRoutes(v1)
