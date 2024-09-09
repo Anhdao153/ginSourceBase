@@ -24,15 +24,4 @@ func main() {
 	middleware.Middlewares(serverInit.restApi)
 	serverInit.restApi.Static("/docs", "./docs")
 	serverInit.RunGrpcAndRestApiOnPort("8080")
-	// start on different port
-	// var waitGroup sync.WaitGroup
-	// waitGroup.Add(2)
-	// go startHttp(&waitGroup)
-	// go startGrpc(&waitGroup)
-	// waitGroup.Wait()
-
-	// run on a port
-	// routes.GinRoutes(Server)
-	// middleware.Middlewares(Server)
-	// RunServer()
 }
