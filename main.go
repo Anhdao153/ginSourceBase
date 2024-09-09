@@ -4,11 +4,8 @@ import (
 	env "github/web-foreman/env"
 	"github/web-foreman/middleware"
 	"github/web-foreman/prisma"
-	"github/web-foreman/routes"
-	"github/web-foreman/swagger"
 
 	"github.com/gin-gonic/gin"
-	"github.com/spf13/viper"
 	"google.golang.org/grpc"
 )
 
@@ -18,14 +15,24 @@ func main() {
 	env.Use()
 	gin.ForceConsoleColor()
 	prisma.PrismaInit()
-	routes.GinRoutes(Server)
-	middleware.Middlewares(Server)
-	Server.Static("/docs", "./docs")
-	swagger.Use(Server)
-	// listen and serve on 0.0.0.0:8080
-	Server.Run(":" + viper.GetString("PORT"))
+	grpc := grpc.NewServer()
 
-	// start grpc
-	s := grpc.NewServer()
-	routes.GrpcRoutes(s)
+	serverInit := ServerInit{
+		grpc:    grpc,
+		restApi: Server,
+	}
+	middleware.Middlewares(serverInit.restApi)
+	serverInit.restApi.Static("/docs", "./docs")
+	serverInit.RunGrpcAndRestApiOnPort("8080")
+	// start on different port
+	// var waitGroup sync.WaitGroup
+	// waitGroup.Add(2)
+	// go startHttp(&waitGroup)
+	// go startGrpc(&waitGroup)
+	// waitGroup.Wait()
+
+	// run on a port
+	// routes.GinRoutes(Server)
+	// middleware.Middlewares(Server)
+	// RunServer()
 }
