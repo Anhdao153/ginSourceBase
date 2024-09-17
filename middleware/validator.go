@@ -25,25 +25,28 @@ func ValidatorMiddleware() gin.HandlerFunc {
 		c.Next()
 		// after request
 		if c.Writer.Status() == 400 {
-			if len(c.Errors) > 0 {
-				var errorMsgs []ErrorMsg
-				for _, e := range c.Errors {
-					if validationErr, ok := e.Err.(validator.ValidationErrors); ok {
-						for _, fe := range validationErr {
-							errorMsg := ErrorMsg{
-								Field:   fe.Field(),
-								Message: getErrorMsg(fe),
-							}
-							errorMsgs = append(errorMsgs, errorMsg)
-						}
-						c.JSON(http.StatusBadRequest, gin.H{"errors": errorMsgs})
-						return
+			if len(c.Errors) <= 0 {
+				return
+			}
+			var errorMsgs []ErrorMsg
+			for _, e := range c.Errors {
+				validationErr, ok := e.Err.(validator.ValidationErrors)
+				if !ok {
+					return
+				}
+				for _, fe := range validationErr {
+					errorMsg := ErrorMsg{
+						Field:   fe.Field(),
+						Message: getErrorMsg(fe),
 					}
+					errorMsgs = append(errorMsgs, errorMsg)
 				}
 			}
+			c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"errors": errorMsgs})
 		}
 	}
 }
+
 func getErrorMsg(fe validator.FieldError) string {
 	switch fe.Tag() {
 	case "required":

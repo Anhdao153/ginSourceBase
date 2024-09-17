@@ -1,6 +1,7 @@
 package user
 
 import (
+	"github/web-foreman/api/utils"
 	"github/web-foreman/prisma"
 	"github/web-foreman/prisma/db"
 	"net/http"
@@ -13,6 +14,7 @@ func UserDetail(c *gin.Context) {
 		Id:   1234,
 		Name: "1234",
 	}
+
 	c.JSON(http.StatusOK, &res)
 
 }
@@ -21,7 +23,7 @@ func CreateUser(c *gin.Context) {
 	// ctx := context.Background()
 	userReq := UserRequest{}
 	if err := c.ShouldBindJSON(&userReq); err != nil {
-		c.AbortWithError(http.StatusBadRequest, err)
+		utils.ThrowException(c, http.StatusBadRequest, err)
 		return
 	}
 
