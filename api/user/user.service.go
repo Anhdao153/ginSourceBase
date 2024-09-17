@@ -19,12 +19,17 @@ func UserDetail(c *gin.Context) {
 
 func CreateUser(c *gin.Context) {
 	// ctx := context.Background()
+	userReq := UserRequest{}
+	if err := c.ShouldBindJSON(&userReq); err != nil {
+		c.AbortWithError(http.StatusBadRequest, err)
+		return
+	}
+
 	user := prisma.Prisma.Users.CreateOne(
 		db.Users.Email.Set("example.com"),
 		db.Users.Password.Set(true),
 		db.Users.Username.Set("Hell"),
 	)
-	// user.Exec(ctx)
 	user.Tx()
 	c.JSON(http.StatusCreated, &user)
 }
