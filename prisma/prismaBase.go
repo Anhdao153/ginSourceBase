@@ -12,12 +12,6 @@ func run() (*db.PrismaClient, error) {
 		return nil, err
 	}
 
-	defer func() {
-		if err := client.Prisma.Disconnect(); err != nil {
-			panic(err)
-		}
-	}()
-
 	return client, nil
 }
 

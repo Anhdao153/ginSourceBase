@@ -2,18 +2,45 @@ datasource db {
     // could be postgresql or mysql
     provider = "mysql"
     url      = env("DATABASE_URL")
-
 }
 
 generator db {
     provider = "go run github.com/steebchen/prisma-client-go"
 }
 
+enum roleName {
+    user
+    admin
+    manager
+}
+
+model Roles {
+    id       Int     @id @default(autoincrement())
+    roleName roleName  @default(user) @unique
+    Users    Users[]
+}
+
 model Users {
-    id        String   @id @default(cuid())
+    id        Int      @id @default(autoincrement())
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
     email     String
-    password  Boolean
-    username  String?
+    password  String
+    username  String
+    roleId    Int
+    role      Roles    @relation(fields: [roleId], references: [id])
+
+    FluteSheet FluteSheet[]
+}
+
+model FluteSheet {
+    id        Int      @id @default(autoincrement())
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+    userId    Int
+    user      Users    @relation(fields: [userId], references: [id])
+    lyric     String
+    note      String
+    title     String
+    tone      String
 }

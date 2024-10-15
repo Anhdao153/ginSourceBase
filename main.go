@@ -15,6 +15,11 @@ func main() {
 	env.Use()
 	gin.ForceConsoleColor()
 	prisma.PrismaInit()
+	defer func() {
+		if err := prisma.Prisma.Disconnect(); err != nil {
+			panic(err)
+		}
+	}()
 	grpc := grpc.NewServer()
 
 	serverInit := ServerInit{
